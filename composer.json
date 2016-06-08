@@ -1,6 +1,6 @@
 {
     "name": "femtopixel/image-resizer",
-    "version": "0.1.1",
+    "version": "dev-master",
     "description": "PHP Component to resize images from a configuration file",
     "require": {
         "php":"^5.3",
