@@ -3,8 +3,7 @@
     "version": "dev-master",
     "description": "PHP Component to resize images from a configuration file",
     "require": {
-        "php":"^5.3 || ^7.0",
-        "masterexploder/phpthumb": "^2.1"
+        "php":"^5.3 || ^7.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.4",
@@ -16,9 +15,9 @@
         "phploc/phploc": "^3.0"
     },
     "autoload": {
-        "classmap": [
-            "src/"
-        ]
+        "psr-4": { 
+          "FemtoPixel\\ImageResizer\\" : "src/"
+        }
     },
     "license": "MIT",
     "authors": [
