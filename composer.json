@@ -1,8 +1,9 @@
 {
     "name": "femtopixel/image-resizer",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "PHP Component to resize images from a configuration file",
     "require": {
+        "php":"^5.3",
         "masterexploder/phpthumb": "^2.1"
     },
     "require-dev": {
@@ -23,7 +24,7 @@
     "authors": [
         {
             "name": "Jay MOULIN",
-            "email": "jaymoulin@gmail.Com"
+            "email": "jaymoulin@gmail.com"
         }
     ]
 }
