@@ -20,10 +20,9 @@ class Format implements \ArrayAccess
     const FULL = 'full';
     const FULL_WIDTH = 'width';
     const FULL_HEIGHT = 'height';
-    const FULL_AUTO = 'auto';
+    const FULL_CROPPED = 'cropped';
     const FULL_NONE = 'none';
 
-    const CROPPED = 'cropped';
     const DEFAULT_IMAGE = 'default';
 
     private $data = array();
@@ -32,14 +31,12 @@ class Format implements \ArrayAccess
      * @param float $width
      * @param float $height
      * @param string $full
-     * @param bool|false $cropped
      * @param null $defaultImage
      * @throws FormatFullModeNotAvailable
      */
-    public function __construct($width, $height, $full = self::FULL_NONE, $cropped = false, $defaultImage = null)
+    public function __construct($width, $height, $full = self::FULL_NONE, $defaultImage = null)
     {
-        $this->setCropped($cropped)
-            ->setFullMode($full)
+        $this->setFullMode($full)
             ->setHeight($height)
             ->setWidth($width);
         if ($defaultImage) {
@@ -76,7 +73,7 @@ class Format implements \ArrayAccess
     {
         $allowed = array(
             self::FULL_NONE => self::FULL_NONE,
-            self::FULL_AUTO => self::FULL_AUTO,
+            self::FULL_CROPPED => self::FULL_CROPPED,
             self::FULL_HEIGHT => self::FULL_HEIGHT,
             self::FULL_WIDTH => self::FULL_WIDTH,
         );
@@ -84,16 +81,6 @@ class Format implements \ArrayAccess
             throw new FormatFullModeNotAvailable("Format '$fullMode' is not allowed in : " . implode(', ', $allowed));
         }
         $this->data[self::FULL] = $fullMode;
-        return $this;
-    }
-
-    /**
-     * @param bool|false $cropped
-     * @return $this
-     */
-    public function setCropped($cropped = false)
-    {
-        $this->data[self::CROPPED] = (bool) $cropped;
         return $this;
     }
 
@@ -111,14 +98,6 @@ class Format implements \ArrayAccess
     public function getHeight()
     {
         return $this->data[self::HEIGHT];
-    }
-
-    /**
-     * @return bool
-     */
-    public function getCropped()
-    {
-        return (bool)$this->data[self::CROPPED];
     }
 
     /**

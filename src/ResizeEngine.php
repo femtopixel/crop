@@ -20,11 +20,11 @@ class ResizeEngine
      * @param string $file - file name to resize
      * @param int $width - new image width
      * @param int $height - new image height
-     * @param bool $proportional - keep image proportional, default is no
+     * @param bool $crop - crop image to requested size
      * @param string $output - name of the new file (include path if needed)
      * @return boolean|resource
      */
-    public function resize($file, $width = 0, $height = 0, $proportional = false, $output = self::OUTPUT_BROWSER)
+    public function resize($file, $width = 0, $height = 0, $crop = false, $output = self::OUTPUT_BROWSER)
     {
         if ($height <= 0 && $width <= 0) return false;
         if ($file === null) return false;
@@ -34,17 +34,11 @@ class ResizeEngine
         list($width_old, $height_old) = $info;
         $cropHeight = $cropWidth = 0;
 
+        $final_width = ($width <= 0) ? $width_old : $width;
+        $final_height = ($height <= 0) ? $height_old : $height;
         # Calculating proportionality
-        if ($proportional) {
-            if ($width == 0) $factor = $height / $height_old;
-            elseif ($height == 0) $factor = $width / $width_old;
-            else                    $factor = min($width / $width_old, $height / $height_old);
 
-            $final_width = round($width_old * $factor);
-            $final_height = round($height_old * $factor);
-        } else {
-            $final_width = ($width <= 0) ? $width_old : $width;
-            $final_height = ($height <= 0) ? $height_old : $height;
+        if ($crop) {
             $widthX = $width_old / $width;
             $heightX = $height_old / $height;
 

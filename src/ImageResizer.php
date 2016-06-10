@@ -181,46 +181,22 @@ class ImageResizer
     {
         $formatDestination = $this->getAvailableFormat($this->getFormat());
         $ratioOriginal = $info[ResizeEngine::INFO_WIDTH] / $info[ResizeEngine::INFO_HEIGHT];
-        $ratioDestination = $formatDestination[Format::WIDTH] / $formatDestination[Format::HEIGHT];
         $width = $formatDestination[Format::WIDTH];
         $height = $formatDestination[Format::HEIGHT];
-        $formatFull = $formatDestination[Format::FULL];
-        if ($formatFull == Format::FULL_AUTO) {
-            list($width, $height) = $this->getWidthHeightForRatio($ratioDestination, $ratioOriginal);
-        } elseif ($formatFull == Format::FULL_WIDTH) {
+        $formatFull = isset($formatDestination[Format::FULL]) ? $formatDestination[Format::FULL] : Format::FULL_NONE;
+        if ($formatFull == Format::FULL_WIDTH) {
             $width = $formatDestination[Format::WIDTH];
             $height = $formatDestination[Format::WIDTH] * (1 / $ratioOriginal);
         } elseif ($formatFull == Format::FULL_HEIGHT) {
             $height = $formatDestination[Format::HEIGHT];
             $width = $formatDestination[Format::HEIGHT] * $ratioOriginal;
         }
-        $this->getResizeEngine()->resize($filePath, $width, $height, $formatFull !== Format::FULL_NONE);
-    }
-
-    /**
-     * @param float $ratioDestination
-     * @param float $ratioOriginal
-     * @return array
-     * @throws Exception\FormatNotAvailable
-     */
-    protected function getWidthHeightForRatio($ratioDestination, $ratioOriginal)
-    {
-        $formatDestination = $this->getAvailableFormat($this->getFormat());
-        if ($ratioDestination < $ratioOriginal) {
-            $height = $formatDestination[Format::HEIGHT];
-            $width = $formatDestination[Format::HEIGHT] * $ratioOriginal;
-            if ($width > $formatDestination[Format::WIDTH] && !$formatDestination[Format::CROPPED]) {
-                $width = $formatDestination[Format::WIDTH];
-                $height = $formatDestination[Format::WIDTH] * (1 / $ratioOriginal);
-            }
-        } else {
-            $width = $formatDestination[Format::WIDTH];
-            $height = $formatDestination[Format::WIDTH] * (1 / $ratioOriginal);
-            if ($height > $formatDestination[Format::HEIGHT] && !$formatDestination[Format::CROPPED]) {
-                $height = $formatDestination[Format::HEIGHT];
-                $width = $formatDestination[Format::HEIGHT] * $ratioOriginal;
-            }
-        }
-        return array($width, $height);
+        $this->getResizeEngine()
+            ->resize(
+                $filePath,
+                $formatFull == Format::FULL_CROPPED ? $formatDestination[Format::WIDTH] : $width,
+                $formatFull == Format::FULL_CROPPED ? $formatDestination[Format::HEIGHT] : $height,
+                $formatFull == Format::FULL_CROPPED
+            );
     }
 }
