@@ -1,12 +1,12 @@
 <?php
 
-namespace FemtoPixel\ImageResizer\Exception;
+namespace FemtoPixel\Crop\Exception;
 
 /**
  * Class FormatNotAvailable
  * @package FemtoPixel\ImageResizer
  */
-class FormatNotAvailable extends \FemtoPixel\ImageResizer\Exception
+class FormatNotAvailable extends \FemtoPixel\Crop\Exception
 {
 
 }

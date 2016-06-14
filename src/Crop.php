@@ -1,12 +1,12 @@
 <?php
 
-namespace FemtoPixel\ImageResizer;
+namespace FemtoPixel\Crop;
 
 /**
  * Class ImageResizer
  * @package FemtoPixel
  */
-class ImageResizer
+class Crop
 {
     const FORMAT_ORIGINAL = 'original';
 
@@ -39,10 +39,10 @@ class ImageResizer
     /**
      * Define a format type to a name
      * @param string $formatName
-     * @param \FemtoPixel\ImageResizer\Format $format
+     * @param \FemtoPixel\Crop\Format $format
      * @return $this
      */
-    public function setAvailableFormat($formatName, \FemtoPixel\ImageResizer\Format $format)
+    public function setAvailableFormat($formatName, \FemtoPixel\Crop\Format $format)
     {
         $this->availableFormats[(string)$formatName] = $format;
         return $this;
@@ -123,7 +123,7 @@ class ImageResizer
 
     /**
      * @param string|null $format
-     * @return \FemtoPixel\ImageResizer\Format[]|\FemtoPixel\ImageResizer\Format
+     * @return \FemtoPixel\Crop\Format[]|\FemtoPixel\Crop\Format
      * @throws Exception\FormatNotAvailable
      */
     public function getAvailableFormat($format = null)

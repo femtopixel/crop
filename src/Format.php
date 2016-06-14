@@ -1,8 +1,8 @@
 <?php
 
-namespace FemtoPixel\ImageResizer;
+namespace FemtoPixel\Crop;
 
-use FemtoPixel\ImageResizer\Exception\FormatFullModeNotAvailable;
+use FemtoPixel\Crop\Exception\FormatFullModeNotAvailable;
 
 /**
  * Class Format

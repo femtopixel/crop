@@ -1,6 +1,6 @@
 <?php
 
-namespace FemtoPixel\ImageResizer;
+namespace FemtoPixel\Crop;
 
 /**
  * Class Exception
