@@ -1,8 +1,4 @@
 <?php
-/**
- * FormatFullModeNotAvailable.php
- * @author: jmoulin@castelis.com
- */
 
 namespace FemtoPixel\ImageResizer\Exception;
 

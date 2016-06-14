@@ -1,8 +1,4 @@
 <?php
-/**
- * Format.php
- * @author: jmoulin@castelis.com
- */
 
 namespace FemtoPixel\ImageResizer;
 
@@ -50,7 +46,7 @@ class Format implements \ArrayAccess
      */
     public function setWidth($width)
     {
-        $this->data[self::WIDTH] = (float) $width;
+        $this->data[self::WIDTH] = (float)$width;
         return $this;
     }
 
@@ -60,7 +56,7 @@ class Format implements \ArrayAccess
      */
     public function setHeight($height)
     {
-        $this->data[self::HEIGHT] = (float) $height;
+        $this->data[self::HEIGHT] = (float)$height;
         return $this;
     }
 

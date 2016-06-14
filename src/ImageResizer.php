@@ -9,19 +9,18 @@ namespace FemtoPixel\ImageResizer;
 class ImageResizer
 {
     const FORMAT_ORIGINAL = 'original';
-    const DEFAULT_IMAGE = __DIR__ . DIRECTORY_SEPARATOR . 'missing.png';
 
     private $format = self::FORMAT_ORIGINAL;
     private $filePath = self::FORMAT_ORIGINAL;
     private $availableFormats = array();
-    private $defaultImage = self::DEFAULT_IMAGE;
+    private $defaultImage = null;
 
     /**
      * @param string $filePath
      * @param string $format
      * @param string $defaultImage
      */
-    public function __construct($filePath, $format = self::FORMAT_ORIGINAL, $defaultImage = self::DEFAULT_IMAGE)
+    public function __construct($filePath, $format = self::FORMAT_ORIGINAL, $defaultImage = null)
     {
         $this->setFilePath($filePath)->setFormat($format)->setDefaultImage($defaultImage);
     }
@@ -93,10 +92,12 @@ class ImageResizer
      */
     protected function getComputedDefaultFilePath()
     {
-        return ($this->getFormat() != self::FORMAT_ORIGINAL &&
-            isset($this->getAvailableFormat($this->getFormat())[Format::DEFAULT_IMAGE])
-        )
-            ? $this->getAvailableFormat($this->getFormat())[Format::DEFAULT_IMAGE]
+        if ($this->getFormat() == self::FORMAT_ORIGINAL) {
+            return $this->getDefaultImage();
+        }
+        $formatRequest = $this->getAvailableFormat($this->getFormat());
+        return (isset($formatRequest[Format::DEFAULT_IMAGE]))
+            ? $formatRequest[Format::DEFAULT_IMAGE]
             : $this->getDefaultImage();
     }
 
@@ -158,9 +159,11 @@ class ImageResizer
      * @param string $defaultFilePath
      * @return $this
      */
-    public function setDefaultImage($defaultFilePath = self::DEFAULT_IMAGE)
+    public function setDefaultImage($defaultFilePath = null)
     {
-        $this->defaultImage = (string)$defaultFilePath;
+        $this->defaultImage = $defaultFilePath
+            ? (string)$defaultFilePath
+            : __DIR__ . DIRECTORY_SEPARATOR . 'missing.png';
         return $this;
     }
 

@@ -1,13 +1,9 @@
 <?php
-/**
- * FormatNotAvailableException.php
- * @author: jmoulin@castelis.com
- */
 
 namespace FemtoPixel\ImageResizer\Exception;
 
 /**
- * Class FormatNotAvailableException
+ * Class FormatNotAvailable
  * @package FemtoPixel\ImageResizer
  */
 class FormatNotAvailable extends \FemtoPixel\ImageResizer\Exception

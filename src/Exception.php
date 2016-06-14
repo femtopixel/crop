@@ -1,8 +1,4 @@
 <?php
-/**
- * Exception.php
- * @author: jmoulin@castelis.com
- */
 
 namespace FemtoPixel\ImageResizer;
 
