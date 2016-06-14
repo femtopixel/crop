@@ -89,7 +89,7 @@
     </target>
 
     <target name="phploc">
-        <exec logoutput="true" dir="${project.basedir}" command='"${project.basedir}/vendor/bin/phploc" --log-csv "${project.basedir}/build/logs/phploc.csv" lib' escape="false" />
+        <exec logoutput="true" dir="${project.basedir}" command='"${project.basedir}/vendor/bin/phploc" --log-csv "${project.basedir}/build/logs/phploc.csv" src' escape="false" />
     </target>
 
     <target name="pdepend">
