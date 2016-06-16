@@ -6,7 +6,7 @@ use FemtoPixel\Crop\Exception\FormatFullModeNotAvailable;
 
 /**
  * Class Format
- * @package FemtoPixel\ImageResizer
+ * @package FemtoPixel\Crop
  */
 class Format implements \ArrayAccess
 {
@@ -21,11 +21,13 @@ class Format implements \ArrayAccess
 
     const DEFAULT_IMAGE = 'default';
 
-    private $data = array();
+    private $data = array(
+        self::DEFAULT_IMAGE => null
+    );
 
     /**
-     * @param float $width
-     * @param float $height
+     * @param int $width
+     * @param int $height
      * @param string $full
      * @param null $defaultImage
      * @throws FormatFullModeNotAvailable
@@ -41,22 +43,22 @@ class Format implements \ArrayAccess
     }
 
     /**
-     * @param float $width
+     * @param int $width
      * @return $this
      */
     public function setWidth($width)
     {
-        $this->data[self::WIDTH] = (float)$width;
+        $this->data[self::WIDTH] = (int)$width;
         return $this;
     }
 
     /**
-     * @param float $height
+     * @param int $height
      * @return $this
      */
     public function setHeight($height)
     {
-        $this->data[self::HEIGHT] = (float)$height;
+        $this->data[self::HEIGHT] = (int)$height;
         return $this;
     }
 
@@ -81,7 +83,7 @@ class Format implements \ArrayAccess
     }
 
     /**
-     * @return float
+     * @return int
      */
     public function getWidth()
     {
@@ -89,7 +91,7 @@ class Format implements \ArrayAccess
     }
 
     /**
-     * @return float
+     * @return int
      */
     public function getHeight()
     {

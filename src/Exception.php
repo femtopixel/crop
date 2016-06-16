@@ -4,7 +4,7 @@ namespace FemtoPixel\Crop;
 
 /**
  * Class Exception
- * @package FemtoPixel\ImageResizer
+ * @package FemtoPixel\Crop
  */
 class Exception extends \Exception
 {

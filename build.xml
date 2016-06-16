@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="FMUP" default="ci" basedir=".">
+<project name="femtopixel/crop" default="ci" basedir=".">
     <property name="isUnix" value="0" />
     <condition property="isUnix" value="1">
         <os family="Unix" />

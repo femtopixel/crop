@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit colors="true" processIsolation="false" backupGlobals="false">
     <testsuites>
-        <testsuite name="Nano Framework - Test suite">
+        <testsuite name="FemtoPixel Crop - Test suite">
             <directory suffix=".php">tests</directory>
             <directory suffix=".php">tests/*</directory>
         </testsuite>

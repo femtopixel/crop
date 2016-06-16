@@ -4,7 +4,7 @@ namespace FemtoPixel\Crop;
 
 /**
  * Class ResizeEngine
- * @package FemtoPixel\ImageResizer
+ * @package FemtoPixel\Crop
  */
 class ResizeEngine
 {
@@ -15,6 +15,8 @@ class ResizeEngine
     const INFO_WIDTH = 'width';
     const INFO_HEIGHT = 'height';
     const INFO_MIME = 'mime';
+
+    private $gd;
 
     /**
      * image resize function
@@ -27,11 +29,13 @@ class ResizeEngine
      */
     public function resize($file, $width = 0, $height = 0, $crop = false, $output = self::OUTPUT_BROWSER)
     {
-        if ($height <= 0 && $width <= 0) return false;
-        if ($file === null) return false;
+        if ($file === null) {
+            return false;
+        }
 
+        $gd = $this->getGd();
         # Setting defaults and meta
-        $info = getimagesize($file);
+        $info = $gd->getimagesize($file);
         list($width_old, $height_old) = $info;
         $cropHeight = $cropWidth = 0;
 
@@ -49,76 +53,142 @@ class ResizeEngine
         }
 
         # Loading image to memory according to type
-        switch ($info[2]) {
-            case IMAGETYPE_JPEG:
-                $image = imagecreatefromjpeg($file);
-                break;
-            case IMAGETYPE_GIF:
-                $image = imagecreatefromgif($file);
-                break;
-            case IMAGETYPE_PNG:
-                $image = imagecreatefrompng($file);
-                break;
-            default:
-                return false;
+        $image = $this->getResource($info[2], $file);
+        if (!$image) {
+            return false;
         }
-
 
         # This is the resizing/resampling/transparency-preserving magic
-        $image_resized = imagecreatetruecolor($final_width, $final_height);
-        if (($info[2] == IMAGETYPE_GIF) || ($info[2] == IMAGETYPE_PNG)) {
-            $transparency = imagecolortransparent($image);
-            $palletsize = imagecolorstotal($image);
+        $imageResized = $this->prepareImageResized($final_width, $final_height, $info[2], $image);
 
-            if ($transparency >= 0 && $transparency < $palletsize) {
-                $transparent_color = imagecolorsforindex($image, $transparency);
-                $transparency = imagecolorallocate($image_resized, $transparent_color['red'], $transparent_color['green'], $transparent_color['blue']);
-                imagefill($image_resized, 0, 0, $transparency);
-                imagecolortransparent($image_resized, $transparency);
-            } elseif ($info[2] == IMAGETYPE_PNG) {
-                imagealphablending($image_resized, false);
-                $color = imagecolorallocatealpha($image_resized, 0, 0, 0, 127);
-                imagefill($image_resized, 0, 0, $color);
-                imagesavealpha($image_resized, true);
-            }
-        }
-        imagecopyresampled($image_resized, $image, 0, 0, $cropWidth, $cropHeight, $final_width, $final_height, $width_old - 2 * $cropWidth, $height_old - 2 * $cropHeight);
+        $gd->imagecopyresampled(
+            $imageResized,
+            $image,
+            0,
+            0,
+            $cropWidth,
+            $cropHeight,
+            $final_width,
+            $final_height,
+            $width_old - 2 * $cropWidth,
+            $height_old - 2 * $cropHeight
+        );
 
         # Preparing a method of providing result
         switch (strtolower($output)) {
             case self::OUTPUT_BROWSER:
-                $mime = image_type_to_mime_type($info[2]);
-                header("Content-type: $mime");
+                $mime = $gd->image_type_to_mime_type($info[2]);
+                $this->phpHeader("Content-Type: $mime");
                 $output = null;
                 break;
             case self::OUTPUT_FILE:
                 $output = $file;
                 break;
             case self::OUTPUT_RETURN:
-                return $image_resized;
-                break;
-            default:
-                break;
-        }
-
-        # Writing image according to type to the output destination and image quality
-        $quality = 100;
-        switch ($info[2]) {
-            case IMAGETYPE_GIF:
-                imagegif($image_resized, $output);
-                break;
-            case IMAGETYPE_JPEG:
-                imagejpeg($image_resized, $output, $quality);
-                break;
-            case IMAGETYPE_PNG:
-                $quality = 9 - (int)((0.9 * $quality) / 10.0);
-                imagepng($image_resized, $output, $quality);
+                return $imageResized;
                 break;
             default:
                 return false;
         }
+        return $this->render($info[2], $imageResized, $output);
+    }
 
+    /**
+     * @param string $string
+     * @param bool $replace
+     * @param null $http_response_code
+     * @codeCoverageIgnore
+     */
+    protected function phpHeader($string, $replace = true, $http_response_code = null)
+    {
+        header($string, $replace, $http_response_code);
+    }
+
+    /**
+     * @param string $type
+     * @param resource $resource
+     * @param string|null $output
+     * @return bool
+     */
+    protected function render($type, $resource, $output = null)
+    {
+        $gd = $this->getGd();
+        # Writing image according to type to the output destination and image quality
+        $quality = 100;
+        switch ($type) {
+            case IMAGETYPE_GIF:
+                $gd->imagegif($resource, $output);
+                break;
+            case IMAGETYPE_JPEG:
+                $gd->imagejpeg($resource, $output, $quality);
+                break;
+            case IMAGETYPE_PNG:
+                $quality = 9 - (int)((0.9 * $quality) / 10.0);
+                $gd->imagepng($resource, $output, $quality);
+                break;
+            default:
+                return false;
+        }
         return true;
+    }
+
+    /**
+     * @param int $width
+     * @param int $height
+     * @param string $type
+     * @param resource $image
+     * @return resource
+     */
+    protected function prepareImageResized($width, $height, $type, $image)
+    {
+        $gd = $this->getGd();
+        $imageResized = $gd->imagecreatetruecolor($width, $height);
+        if (($type == IMAGETYPE_GIF) || ($type == IMAGETYPE_PNG)) {
+            $transparency = $gd->imagecolortransparent($image);
+            $palletsize = $gd->imagecolorstotal($image);
+
+            if ($transparency >= 0 && $transparency < $palletsize) {
+                $transparent_color = $gd->imagecolorsforindex($image, $transparency);
+                $transparency = $gd->imagecolorallocate(
+                    $imageResized,
+                    $transparent_color['red'],
+                    $transparent_color['green'],
+                    $transparent_color['blue']
+                );
+                $gd->imagefill($imageResized, 0, 0, $transparency);
+                $gd->imagecolortransparent($imageResized, $transparency);
+            } elseif ($type == IMAGETYPE_PNG) {
+                $gd->imagealphablending($imageResized, false);
+                $color = $gd->imagecolorallocatealpha($imageResized, 0, 0, 0, 127);
+                $gd->imagefill($imageResized, 0, 0, $color);
+                $gd->imagesavealpha($imageResized, true);
+            }
+        }
+        return $imageResized;
+    }
+
+    /**
+     * @param string $type
+     * @param string $file
+     * @return bool|resource
+     */
+    protected function getResource($type, $file)
+    {
+        $gd = $this->getGd();
+        switch ($type) {
+            case IMAGETYPE_JPEG:
+                $image = $gd->imagecreatefromjpeg($file);
+                break;
+            case IMAGETYPE_GIF:
+                $image = $gd->imagecreatefromgif($file);
+                break;
+            case IMAGETYPE_PNG:
+                $image = $gd->imagecreatefrompng($file);
+                break;
+            default:
+                return false;
+        }
+        return $image;
     }
 
     /**
@@ -128,7 +198,7 @@ class ResizeEngine
      */
     protected function determineFormat($filePath)
     {
-        $formatInfo = getimagesize($filePath);
+        $formatInfo = $this->getGd()->getimagesize($filePath);
 
         // non-image files will return false
         if ($formatInfo === false) {
@@ -154,18 +224,18 @@ class ResizeEngine
      */
     protected function verifyFormatCompatibility($filePath)
     {
-        $gdInfo = gd_info();
+        $gdInfo = $this->getGd()->gd_info();
         $format = $this->determineFormat($filePath);
 
         switch ($format) {
             case 'image/gif':
-                $isCompatible = $gdInfo['GIF Create Support'];
+                $isCompatible = (isset($gdInfo['GIF Create Support']) && $gdInfo['GIF Create Support']);
                 break;
             case 'image/jpeg':
                 $isCompatible = (isset($gdInfo['JPG Support']) || isset($gdInfo['JPEG Support']));
                 break;
             case 'image/png':
-                $isCompatible = $gdInfo['PNG Support'];
+                $isCompatible = (isset($gdInfo['PNG Support']) && $gdInfo['PNG Support']);
                 break;
             default:
                 $isCompatible = false;
@@ -173,7 +243,7 @@ class ResizeEngine
 
         if (!$isCompatible) {
             // one last check for "JPEG" instead
-            $isCompatible = $gdInfo['JPEG Support'];
+            $isCompatible = (isset($gdInfo['JPEG Support']) && $gdInfo['JPEG Support']);
 
             if (!$isCompatible) {
                 throw new \Exception("Your GD installation does not support {$format} image types");
@@ -189,25 +259,35 @@ class ResizeEngine
      */
     public function getImageInfo($filePath)
     {
+        $gd = $this->getGd();
         $format = $this->verifyFormatCompatibility($filePath);
         switch ($format) {
             case 'image/gif':
-                $resource = imagecreatefromgif($filePath);
+                $resource = $gd->imagecreatefromgif($filePath);
                 break;
             case 'image/jpeg':
-                $resource = imagecreatefromjpeg($filePath);
+                $resource = $gd->imagecreatefromjpeg($filePath);
                 break;
             case 'image/png':
-                $resource = imagecreatefrompng($filePath);
+                $resource = $gd->imagecreatefrompng($filePath);
                 break;
             default:
                 throw new \Exception("Your GD installation does not support {$format} image types");
         }
 
         return array(
-            self::INFO_WIDTH => imagesx($resource),
-            self::INFO_HEIGHT => imagesy($resource),
+            self::INFO_WIDTH => $gd->imagesx($resource),
+            self::INFO_HEIGHT => $gd->imagesy($resource),
             self::INFO_MIME => $format,
         );
+    }
+
+    /**
+     * @return ResizeEngine\Gd
+     * @codeCoverageIgnore
+     */
+    protected function getGd()
+    {
+        return ($this->gd = ($this->gd ?: new ResizeEngine\Gd()));
     }
 }

@@ -27,7 +27,7 @@ $formats = array(
     'mini' => array(
         'width' => 100,
         'height' => 100,
-        'full' => 'auto',
+        'full' => 'cropped',
     ),
 );
 $image = new \FemtoPixel\Crop\Crop('/path/to/file.png', 'mini');

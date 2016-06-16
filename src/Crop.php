@@ -3,8 +3,8 @@
 namespace FemtoPixel\Crop;
 
 /**
- * Class ImageResizer
- * @package FemtoPixel
+ * Class Crop
+ * @package FemtoPixel\Crop
  */
 class Crop
 {
@@ -14,6 +14,7 @@ class Crop
     private $filePath = self::FORMAT_ORIGINAL;
     private $availableFormats = array();
     private $defaultImage = null;
+    private $resizeEngine = null;
 
     /**
      * @param string $filePath
@@ -55,17 +56,50 @@ class Crop
     public function render()
     {
         $filePath = $this->getFilePath();
-        if (!file_exists($filePath)) {
-            header('HTTP/1.0 404 Not Found');
+        if (!$this->phpFileExists($filePath)) {
+            $this->phpHeader('HTTP/1.0 404 Not Found');
             $filePath = $this->getComputedDefaultFilePath();
         }
         $info = $this->getResizeEngine()->getImageInfo($filePath);
         if ($this->getFormat() == self::FORMAT_ORIGINAL) {
-            header("Content-type: {$info[ResizeEngine::INFO_MIME]}");
-            readfile($filePath);
+            $this->phpHeader("Content-Type: {$info[ResizeEngine::INFO_MIME]}");
+            $this->phpReadfile($filePath);
         } else {
             $this->resize($filePath, $info);
         }
+    }
+
+    /**
+     * @param string $filePath
+     * @return bool
+     * @codeCoverageIgnore
+     */
+    protected function phpFileExists($filePath)
+    {
+        return file_exists($filePath);
+    }
+
+    /**
+     * @param string $filename
+     * @param bool $use_include_path
+     * @param resource $context
+     * @return int
+     * @codeCoverageIgnore
+     */
+    protected function phpReadfile($filename, $use_include_path = null, $context = null)
+    {
+        return readfile($filename, $use_include_path, $context);
+    }
+
+    /**
+     * @param string $string
+     * @param bool $replace
+     * @param int $http_response_code
+     * @codeCoverageIgnore
+     */
+    protected function phpHeader($string, $replace = true, $http_response_code = null)
+    {
+        return header($string, $replace, $http_response_code);
     }
 
     /**
@@ -92,10 +126,11 @@ class Crop
      */
     protected function getComputedDefaultFilePath()
     {
-        if ($this->getFormat() == self::FORMAT_ORIGINAL) {
+        $format = $this->getFormat();
+        if ($format == self::FORMAT_ORIGINAL) {
             return $this->getDefaultImage();
         }
-        $formatRequest = $this->getAvailableFormat($this->getFormat());
+        $formatRequest = $this->getAvailableFormat($format);
         return (isset($formatRequest[Format::DEFAULT_IMAGE]))
             ? $formatRequest[Format::DEFAULT_IMAGE]
             : $this->getDefaultImage();
@@ -169,10 +204,11 @@ class Crop
 
     /**
      * @return ResizeEngine
+     * @codeCoverageIgnore
      */
     protected function getResizeEngine()
     {
-        return new ResizeEngine();
+        return ($this->resizeEngine = ($this->resizeEngine ?: new ResizeEngine()));
     }
 
     /**
@@ -184,15 +220,15 @@ class Crop
     {
         $formatDestination = $this->getAvailableFormat($this->getFormat());
         $ratioOriginal = $info[ResizeEngine::INFO_WIDTH] / $info[ResizeEngine::INFO_HEIGHT];
-        $width = $formatDestination[Format::WIDTH];
-        $height = $formatDestination[Format::HEIGHT];
+        $width = (int)$formatDestination[Format::WIDTH];
+        $height = (int)$formatDestination[Format::HEIGHT];
         $formatFull = isset($formatDestination[Format::FULL]) ? $formatDestination[Format::FULL] : Format::FULL_NONE;
         if ($formatFull == Format::FULL_WIDTH) {
-            $width = $formatDestination[Format::WIDTH];
-            $height = $formatDestination[Format::WIDTH] * (1 / $ratioOriginal);
+            $width = (int)$formatDestination[Format::WIDTH];
+            $height = (int)$formatDestination[Format::WIDTH] * (1 / $ratioOriginal);
         } elseif ($formatFull == Format::FULL_HEIGHT) {
-            $height = $formatDestination[Format::HEIGHT];
-            $width = $formatDestination[Format::HEIGHT] * $ratioOriginal;
+            $height = (int)$formatDestination[Format::HEIGHT];
+            $width = (int)$formatDestination[Format::HEIGHT] * $ratioOriginal;
         }
         $this->getResizeEngine()
             ->resize(
