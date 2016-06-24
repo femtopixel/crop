@@ -12,7 +12,7 @@ class CropTest extends \PHPUnit_Framework_TestCase
         $crop = new \FemtoPixel\Crop\Crop($file);
         $this->assertSame($file, $crop->getFilePath());
         $this->assertSame(\FemtoPixel\Crop\Crop::FORMAT_ORIGINAL, $crop->getFormat());
-        $this->assertStringEndsWith('/src/missing.png', $crop->getDefaultImage());
+        $this->assertStringEndsWith('missing.png', $crop->getDefaultImage());
 
         $defaultImage = '/new/path/default.png';
         $crop = new \FemtoPixel\Crop\Crop($file, 'testFormat', $defaultImage);
@@ -54,15 +54,15 @@ class CropTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($crop, $crop->setFormat('test'));
         $this->assertSame('test', $crop->getFormat());
 
-        $this->assertStringEndsWith('/src/missing.png', $crop->getDefaultImage());
+        $this->assertStringEndsWith('missing.png', $crop->getDefaultImage());
         $this->assertSame($crop, $crop->setDefaultImage($file));
         $this->assertSame($file, $crop->getDefaultImage());
         $this->assertSame($crop, $crop->setDefaultImage(null));
-        $this->assertStringEndsWith('/src/missing.png', $crop->getDefaultImage());
+        $this->assertStringEndsWith('missing.png', $crop->getDefaultImage());
         $this->assertSame($crop, $crop->setDefaultImage($file));
         $this->assertSame($file, $crop->getDefaultImage());
         $this->assertSame($crop, $crop->setDefaultImage());
-        $this->assertStringEndsWith('/src/missing.png', $crop->getDefaultImage());
+        $this->assertStringEndsWith('missing.png', $crop->getDefaultImage());
     }
 
     public function testGetAvailableFormatAll()
