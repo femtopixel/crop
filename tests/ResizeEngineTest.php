@@ -1,6 +1,5 @@
 <?php
-namespace Tests;
-
+namespace FemtoPixel\Crop\Tests;
 
 class ResizeEngineTest extends \PHPUnit_Framework_TestCase
 {

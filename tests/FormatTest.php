@@ -1,12 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jmoulin
- * Date: 15/06/2016
- * Time: 16:22
- */
-
-namespace Tests;
+namespace FemtoPixel\Crop\Tests;
 
 
 class FormatTest extends \PHPUnit_Framework_TestCase

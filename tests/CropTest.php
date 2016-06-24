@@ -1,5 +1,5 @@
 <?php
-namespace Tests;
+namespace FemtoPixel\Crop\Tests;
 
 use FemtoPixel\Crop\Format;
 use FemtoPixel\Crop\ResizeEngine;

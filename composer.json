@@ -1,6 +1,6 @@
 {
   "name": "femtopixel/crop",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "PHP Component to resize images from a configuration file",
   "require": {
     "php": "^5.3 || ^7.0",
@@ -9,10 +9,8 @@
   "require-dev": {
     "phpmd/phpmd": "^2.4",
     "phpunit/phpunit": "^4.0",
-    "phing/phing": "^2.14",
     "phpdocumentor/phpdocumentor": "^2.9",
     "squizlabs/php_codesniffer": "^2.6",
-    "pdepend/pdepend": "^2.2",
     "sebastian/phpcpd": "^2.0",
     "phploc/phploc": "^2.0 || ^3.0",
     "codeclimate/php-test-reporter": "dev-master"
@@ -21,6 +19,19 @@
     "psr-4": {
       "FemtoPixel\\Crop\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "FemtoPixel\\Crop\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "phpunit": "phpunit",
+    "phpcs": "phpcs src --standard=PSR2 --report-checkstyle=build/logs/checkstyle.xml",
+    "phploc": "phploc src --log-csv build/logs/phploc.csv",
+    "phpmd": "phpmd src xml codesize,controversial,cleancode,design,naming,unusedcode --reportfile build/logs/checkstyle.xml",
+    "phpcpd": "phpcpd src --log-pmd=build/logs/cpd.xml",
+    "phpdoc": "phpdoc -d src -t docs --template clean"
   },
   "license": "MIT",
   "authors": [
