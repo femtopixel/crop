@@ -16,7 +16,7 @@ class ResizeEngine
     const INFO_HEIGHT = 'height';
     const INFO_MIME = 'mime';
 
-    private $gd;
+    private $libGd;
 
     /**
      * image resize function
@@ -27,29 +27,30 @@ class ResizeEngine
      * @param string $output - name of the new file (include path if needed)
      * @return boolean|resource
      */
-    public function resize($file, $width = 0, $height = 0, $crop = false, $output = self::OUTPUT_BROWSER)
+    public function resize($file, $width = 0, $height = 0, $crop = null, $output = self::OUTPUT_BROWSER)
     {
+        $crop = !is_null($crop) ? (bool)$crop : false;
         if ($file === null) {
             return false;
         }
 
-        $gd = $this->getGd();
+        $libGd = $this->getGd();
         # Setting defaults and meta
-        $info = $gd->getimagesize($file);
-        list($width_old, $height_old) = $info;
+        $info = $libGd->getimagesize($file);
+        list($widthOld, $heightOld) = $info;
         $cropHeight = $cropWidth = 0;
 
-        $final_width = ($width <= 0) ? $width_old : $width;
-        $final_height = ($height <= 0) ? $height_old : $height;
+        $finalWidth = ($width <= 0) ? $widthOld : $width;
+        $finalHeight = ($height <= 0) ? $heightOld : $height;
         # Calculating proportionality
 
         if ($crop) {
-            $widthX = $width_old / $width;
-            $heightX = $height_old / $height;
+            $widthX = $widthOld / $width;
+            $heightX = $heightOld / $height;
 
-            $x = min($widthX, $heightX);
-            $cropWidth = ($width_old - $width * $x) / 2;
-            $cropHeight = ($height_old - $height * $x) / 2;
+            $realWidth = min($widthX, $heightX);
+            $cropWidth = ($widthOld - $width * $realWidth) / 2;
+            $cropHeight = ($heightOld - $height * $realWidth) / 2;
         }
 
         # Loading image to memory according to type
@@ -59,25 +60,25 @@ class ResizeEngine
         }
 
         # This is the resizing/resampling/transparency-preserving magic
-        $imageResized = $this->prepareImageResized($final_width, $final_height, $info[2], $image);
+        $imageResized = $this->prepareImageResized($finalWidth, $finalHeight, $info[2], $image);
 
-        $gd->imagecopyresampled(
+        $libGd->imagecopyresampled(
             $imageResized,
             $image,
             0,
             0,
             $cropWidth,
             $cropHeight,
-            $final_width,
-            $final_height,
-            $width_old - 2 * $cropWidth,
-            $height_old - 2 * $cropHeight
+            $finalWidth,
+            $finalHeight,
+            $widthOld - 2 * $cropWidth,
+            $heightOld - 2 * $cropHeight
         );
 
         # Preparing a method of providing result
         switch (strtolower($output)) {
             case self::OUTPUT_BROWSER:
-                $mime = $gd->image_type_to_mime_type($info[2]);
+                $mime = $libGd->image_type_to_mime_type($info[2]);
                 $this->phpHeader("Content-Type: $mime");
                 $output = null;
                 break;
@@ -96,12 +97,13 @@ class ResizeEngine
     /**
      * @param string $string
      * @param bool $replace
-     * @param null $http_response_code
+     * @param null $httpResponseCode
      * @codeCoverageIgnore
      */
-    protected function phpHeader($string, $replace = true, $http_response_code = null)
+    protected function phpHeader($string, $replace = null, $httpResponseCode = null)
     {
-        header($string, $replace, $http_response_code);
+        $replace = !is_null($replace) ? (bool)$replace : true;
+        header($string, $replace, $httpResponseCode);
     }
 
     /**
@@ -112,19 +114,19 @@ class ResizeEngine
      */
     protected function render($type, $resource, $output = null)
     {
-        $gd = $this->getGd();
+        $libGd = $this->getGd();
         # Writing image according to type to the output destination and image quality
         $quality = 100;
         switch ($type) {
             case IMAGETYPE_GIF:
-                $gd->imagegif($resource, $output);
+                $libGd->imagegif($resource, $output);
                 break;
             case IMAGETYPE_JPEG:
-                $gd->imagejpeg($resource, $output, $quality);
+                $libGd->imagejpeg($resource, $output, $quality);
                 break;
             case IMAGETYPE_PNG:
                 $quality = 9 - (int)((0.9 * $quality) / 10.0);
-                $gd->imagepng($resource, $output, $quality);
+                $libGd->imagepng($resource, $output, $quality);
                 break;
             default:
                 return false;
@@ -141,27 +143,27 @@ class ResizeEngine
      */
     protected function prepareImageResized($width, $height, $type, $image)
     {
-        $gd = $this->getGd();
-        $imageResized = $gd->imagecreatetruecolor($width, $height);
+        $libGd = $this->getGd();
+        $imageResized = $libGd->imagecreatetruecolor($width, $height);
         if (($type == IMAGETYPE_GIF) || ($type == IMAGETYPE_PNG)) {
-            $transparency = $gd->imagecolortransparent($image);
-            $palletsize = $gd->imagecolorstotal($image);
+            $transparency = $libGd->imagecolortransparent($image);
+            $palletsize = $libGd->imagecolorstotal($image);
 
             if ($transparency >= 0 && $transparency < $palletsize) {
-                $transparent_color = $gd->imagecolorsforindex($image, $transparency);
-                $transparency = $gd->imagecolorallocate(
+                $transparentColor = $libGd->imagecolorsforindex($image, $transparency);
+                $transparency = $libGd->imagecolorallocate(
                     $imageResized,
-                    $transparent_color['red'],
-                    $transparent_color['green'],
-                    $transparent_color['blue']
+                    $transparentColor['red'],
+                    $transparentColor['green'],
+                    $transparentColor['blue']
                 );
-                $gd->imagefill($imageResized, 0, 0, $transparency);
-                $gd->imagecolortransparent($imageResized, $transparency);
+                $libGd->imagefill($imageResized, 0, 0, $transparency);
+                $libGd->imagecolortransparent($imageResized, $transparency);
             } elseif ($type == IMAGETYPE_PNG) {
-                $gd->imagealphablending($imageResized, false);
-                $color = $gd->imagecolorallocatealpha($imageResized, 0, 0, 0, 127);
-                $gd->imagefill($imageResized, 0, 0, $color);
-                $gd->imagesavealpha($imageResized, true);
+                $libGd->imagealphablending($imageResized, false);
+                $color = $libGd->imagecolorallocatealpha($imageResized, 0, 0, 0, 127);
+                $libGd->imagefill($imageResized, 0, 0, $color);
+                $libGd->imagesavealpha($imageResized, true);
             }
         }
         return $imageResized;
@@ -174,16 +176,16 @@ class ResizeEngine
      */
     protected function getResource($type, $file)
     {
-        $gd = $this->getGd();
+        $libGd = $this->getGd();
         switch ($type) {
             case IMAGETYPE_JPEG:
-                $image = $gd->imagecreatefromjpeg($file);
+                $image = $libGd->imagecreatefromjpeg($file);
                 break;
             case IMAGETYPE_GIF:
-                $image = $gd->imagecreatefromgif($file);
+                $image = $libGd->imagecreatefromgif($file);
                 break;
             case IMAGETYPE_PNG:
-                $image = $gd->imagecreatefrompng($file);
+                $image = $libGd->imagecreatefrompng($file);
                 break;
             default:
                 return false;
@@ -259,25 +261,25 @@ class ResizeEngine
      */
     public function getImageInfo($filePath)
     {
-        $gd = $this->getGd();
+        $libGd = $this->getGd();
         $format = $this->verifyFormatCompatibility($filePath);
         switch ($format) {
             case 'image/gif':
-                $resource = $gd->imagecreatefromgif($filePath);
+                $resource = $libGd->imagecreatefromgif($filePath);
                 break;
             case 'image/jpeg':
-                $resource = $gd->imagecreatefromjpeg($filePath);
+                $resource = $libGd->imagecreatefromjpeg($filePath);
                 break;
             case 'image/png':
-                $resource = $gd->imagecreatefrompng($filePath);
+                $resource = $libGd->imagecreatefrompng($filePath);
                 break;
             default:
                 throw new \Exception("Your GD installation does not support {$format} image types");
         }
 
         return array(
-            self::INFO_WIDTH => $gd->imagesx($resource),
-            self::INFO_HEIGHT => $gd->imagesy($resource),
+            self::INFO_WIDTH => $libGd->imagesx($resource),
+            self::INFO_HEIGHT => $libGd->imagesy($resource),
             self::INFO_MIME => $format,
         );
     }
@@ -288,6 +290,6 @@ class ResizeEngine
      */
     protected function getGd()
     {
-        return ($this->gd = ($this->gd ?: new ResizeEngine\Gd()));
+        return $this->libGd = $this->libGd ?: new ResizeEngine\Gd();
     }
 }

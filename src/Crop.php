@@ -64,9 +64,9 @@ class Crop
         if ($this->getFormat() == self::FORMAT_ORIGINAL) {
             $this->phpHeader("Content-Type: {$info[ResizeEngine::INFO_MIME]}");
             $this->phpReadfile($filePath);
-        } else {
-            $this->resize($filePath, $info);
+            return;
         }
+        $this->resize($filePath, $info);
     }
 
     /**
@@ -81,25 +81,26 @@ class Crop
 
     /**
      * @param string $filename
-     * @param bool $use_include_path
+     * @param bool $useIncludePath
      * @param resource $context
      * @return int
      * @codeCoverageIgnore
      */
-    protected function phpReadfile($filename, $use_include_path = null, $context = null)
+    protected function phpReadfile($filename, $useIncludePath = null, $context = null)
     {
-        return readfile($filename, $use_include_path, $context);
+        return readfile($filename, $useIncludePath, $context);
     }
 
     /**
      * @param string $string
      * @param bool $replace
-     * @param int $http_response_code
+     * @param int $httpResponseCode
      * @codeCoverageIgnore
      */
-    protected function phpHeader($string, $replace = true, $http_response_code = null)
+    protected function phpHeader($string, $replace = null, $httpResponseCode = null)
     {
-        return header($string, $replace, $http_response_code);
+        $replace = !is_null($replace) ? (bool)$replace : true;
+        return header($string, $replace, $httpResponseCode);
     }
 
     /**
