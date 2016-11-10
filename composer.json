@@ -1,10 +1,9 @@
 {
   "name": "femtopixel/crop",
-  "version": "0.1.5",
   "description": "PHP Component to resize images from a configuration file",
   "require": {
     "php": "^5.3 || ^7.0",
-    "ext-gd": "^0.0.0 || ^7.0"
+    "ext-gd": "*"
   },
   "require-dev": {
     "phpmd/phpmd": "^2.4",

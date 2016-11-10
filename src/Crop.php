@@ -212,11 +212,11 @@ class Crop
     }
 
     /**
-     * @param $filePath
-     * @param $info
+     * @param string $filePath
+     * @param array $info
      * @throws Exception\FormatNotAvailable
      */
-    protected function resize($filePath, $info)
+    protected function resize($filePath, array $info)
     {
         $formatDestination = $this->getAvailableFormat($this->getFormat());
         $ratioOriginal = $info[ResizeEngine::INFO_WIDTH] / $info[ResizeEngine::INFO_HEIGHT];

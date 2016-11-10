@@ -16,7 +16,6 @@ allows only defined format
 
 ## Installation
 
-
 ```
 composer require femtopixel/crop
 ```
@@ -37,3 +36,18 @@ $image->setFormatsFromArray($formats)->render();
 ```
 
 You can define as many format that you want!
+
+- First parameter is path to your file to display
+- Second (optional) is the format you want to display in (default : 'original' (no modification))
+- Third (optional) is path to default image displayed if path in first parameter doesn't exist. This file will be displayed in requested format. (default : 'src/missing.png')
+ 
+## Configuration
+
+Each format given in method `setFormatsFromArray` must define `width`, `height` and optional `full` index.
+ 
+`full` can be configured to 4 values depending on attended rendering :
+
+ - `none` : No cropping, no resize. Will render image with original file dimensions.
+ - `cropped` : Crop the rendered image to be exactly dimensions defined in configuration.
+ - `height` : Resize the image without distortion to have height to value defined in configuration.
+ - `width` : Resize the image without distortion to have width to value defined in configuration.
