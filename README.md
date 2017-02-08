@@ -1,5 +1,4 @@
 [![Latest Stable Version](https://poser.pugx.org/femtopixel/crop/v/stable)](https://packagist.org/packages/femtopixel/crop) 
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.3-8892BF.svg?style=flat-square)](https://php.net/)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.0-8892BF.svg?style=flat-square)](https://php.net/)
 [![Build Status](https://scrutinizer-ci.com/g/femtopixel/crop/badges/build.png?b=master)](https://scrutinizer-ci.com/g/femtopixel/crop/build-status/master)
 [![Dependency Status](https://www.versioneye.com/user/projects/575fe512433d18002c19d66d/badge.svg?style=flat)](https://www.versioneye.com/user/projects/575fe512433d18002c19d66d)

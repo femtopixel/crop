@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace FemtoPixel\Crop;
 
@@ -13,7 +14,7 @@ class Crop
     private $format = self::FORMAT_ORIGINAL;
     private $filePath = self::FORMAT_ORIGINAL;
     private $availableFormats = array();
-    private $defaultImage = null;
+    private $defaultImage = '';
     private $resizeEngine = null;
 
     /**
@@ -21,7 +22,7 @@ class Crop
      * @param string $format
      * @param string $defaultImage
      */
-    public function __construct($filePath, $format = self::FORMAT_ORIGINAL, $defaultImage = null)
+    public function __construct(string $filePath, string $format = self::FORMAT_ORIGINAL, string $defaultImage = '')
     {
         $this->setFilePath($filePath)->setFormat($format)->setDefaultImage($defaultImage);
     }
@@ -29,11 +30,11 @@ class Crop
     /**
      * Define all formats from an array
      * @param array $formats
-     * @return $this
+     * @return Crop
      */
-    public function setFormatsFromArray(array $formats)
+    public function setFormatsFromArray(array $formats) : Crop
     {
-        $this->availableFormats = (array)$formats;
+        $this->availableFormats = $formats;
         return $this;
     }
 
@@ -41,11 +42,11 @@ class Crop
      * Define a format type to a name
      * @param string $formatName
      * @param \FemtoPixel\Crop\Format $format
-     * @return $this
+     * @return Crop
      */
-    public function setAvailableFormat($formatName, \FemtoPixel\Crop\Format $format)
+    public function setAvailableFormat(string $formatName, \FemtoPixel\Crop\Format $format) : Crop
     {
-        $this->availableFormats[(string)$formatName] = $format;
+        $this->availableFormats[$formatName] = $format;
         return $this;
     }
 
@@ -74,7 +75,7 @@ class Crop
      * @return bool
      * @codeCoverageIgnore
      */
-    protected function phpFileExists($filePath)
+    protected function phpFileExists(string $filePath) : bool
     {
         return file_exists($filePath);
     }
@@ -86,7 +87,7 @@ class Crop
      * @return int
      * @codeCoverageIgnore
      */
-    protected function phpReadfile($filename, $useIncludePath = null, $context = null)
+    protected function phpReadfile(string $filename, ?bool $useIncludePath = null, $context = null) : int
     {
         return readfile($filename, $useIncludePath, $context);
     }
@@ -97,25 +98,24 @@ class Crop
      * @param int $httpResponseCode
      * @codeCoverageIgnore
      */
-    protected function phpHeader($string, $replace = null, $httpResponseCode = null)
+    protected function phpHeader(string $string, bool $replace = true, ?int $httpResponseCode = null)
     {
-        $replace = !is_null($replace) ? (bool)$replace : true;
         return header($string, $replace, $httpResponseCode);
     }
 
     /**
      * @return string
      */
-    public function getFilePath()
+    public function getFilePath() : string
     {
         return $this->filePath;
     }
 
     /**
      * @param string $filePath
-     * @return $this
+     * @return Crop
      */
-    public function setFilePath($filePath)
+    public function setFilePath(string $filePath) : Crop
     {
         $this->filePath = (string)$filePath;
         return $this;
@@ -141,7 +141,7 @@ class Crop
      * Returns format name defined
      * @return string
      */
-    public function getFormat()
+    public function getFormat() : string
     {
         return $this->format;
     }
@@ -149,9 +149,9 @@ class Crop
     /**
      * Define format name to get
      * @param string $format
-     * @return $this
+     * @return Crop
      */
-    public function setFormat($format = self::FORMAT_ORIGINAL)
+    public function setFormat(string $format = self::FORMAT_ORIGINAL) : Crop
     {
         $this->format = (string)$format;
         return $this;
@@ -162,7 +162,7 @@ class Crop
      * @return \FemtoPixel\Crop\Format[]|\FemtoPixel\Crop\Format
      * @throws Exception\FormatNotAvailable
      */
-    public function getAvailableFormat($format = null)
+    public function getAvailableFormat(?string $format = null)
     {
         if ($format === null) {
             return $this->availableFormats;
@@ -178,7 +178,7 @@ class Crop
      * @param string $format
      * @return bool
      */
-    public function isAvailableFormat($format)
+    public function isAvailableFormat(string $format) : bool
     {
         return isset($this->availableFormats[$format]);
     }
@@ -186,16 +186,16 @@ class Crop
     /**
      * @return string
      */
-    public function getDefaultImage()
+    public function getDefaultImage() : string
     {
         return $this->defaultImage;
     }
 
     /**
      * @param string $defaultFilePath
-     * @return $this
+     * @return Crop
      */
-    public function setDefaultImage($defaultFilePath = null)
+    public function setDefaultImage(?string $defaultFilePath = null) : Crop
     {
         $this->defaultImage = $defaultFilePath
             ? (string)$defaultFilePath
@@ -207,7 +207,7 @@ class Crop
      * @return ResizeEngine
      * @codeCoverageIgnore
      */
-    protected function getResizeEngine()
+    protected function getResizeEngine() : ResizeEngine
     {
         return ($this->resizeEngine = ($this->resizeEngine ?: new ResizeEngine()));
     }
@@ -226,10 +226,10 @@ class Crop
         $formatFull = isset($formatDestination[Format::FULL]) ? $formatDestination[Format::FULL] : Format::FULL_NONE;
         if ($formatFull == Format::FULL_WIDTH) {
             $width = (int)$formatDestination[Format::WIDTH];
-            $height = (int)$formatDestination[Format::WIDTH] * (1 / $ratioOriginal);
+            $height = (int) ($formatDestination[Format::WIDTH] * (1 / $ratioOriginal));
         } elseif ($formatFull == Format::FULL_HEIGHT) {
             $height = (int)$formatDestination[Format::HEIGHT];
-            $width = (int)$formatDestination[Format::HEIGHT] * $ratioOriginal;
+            $width = (int) ($formatDestination[Format::HEIGHT] * $ratioOriginal);
         }
         $this->getResizeEngine()
             ->resize(

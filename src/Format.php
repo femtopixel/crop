@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace FemtoPixel\Crop;
 
@@ -29,10 +30,10 @@ class Format implements \ArrayAccess
      * @param int $width
      * @param int $height
      * @param string $full
-     * @param null $defaultImage
+     * @param string|null $defaultImage
      * @throws FormatFullModeNotAvailable
      */
-    public function __construct($width, $height, $full = self::FULL_NONE, $defaultImage = null)
+    public function __construct(int $width, int $height, string $full = self::FULL_NONE, ?string $defaultImage = null)
     {
         $this->setFullMode($full)
             ->setHeight($height)
@@ -44,30 +45,30 @@ class Format implements \ArrayAccess
 
     /**
      * @param int $width
-     * @return $this
+     * @return Format
      */
-    public function setWidth($width)
+    public function setWidth(int $width) : Format
     {
-        $this->data[self::WIDTH] = (int)$width;
+        $this->data[self::WIDTH] = $width;
         return $this;
     }
 
     /**
      * @param int $height
-     * @return $this
+     * @return Format
      */
-    public function setHeight($height)
+    public function setHeight(int $height) : Format
     {
-        $this->data[self::HEIGHT] = (int)$height;
+        $this->data[self::HEIGHT] = $height;
         return $this;
     }
 
     /**
      * @param string $fullMode
-     * @return $this
+     * @return Format
      * @throws FormatFullModeNotAvailable
      */
-    public function setFullMode($fullMode = self::FULL_NONE)
+    public function setFullMode(string $fullMode = self::FULL_NONE) : Format
     {
         $allowed = array(
             self::FULL_NONE => self::FULL_NONE,
@@ -85,7 +86,7 @@ class Format implements \ArrayAccess
     /**
      * @return int
      */
-    public function getWidth()
+    public function getWidth() : int
     {
         return $this->data[self::WIDTH];
     }
@@ -93,7 +94,7 @@ class Format implements \ArrayAccess
     /**
      * @return int
      */
-    public function getHeight()
+    public function getHeight() : int
     {
         return $this->data[self::HEIGHT];
     }
@@ -101,16 +102,16 @@ class Format implements \ArrayAccess
     /**
      * @return string
      */
-    public function getFullMode()
+    public function getFullMode() : string
     {
         return $this->data[self::FULL];
     }
 
     /**
      * @param string|null $defaultImage
-     * @return $this
+     * @return Format
      */
-    public function setDefaultImage($defaultImage = null)
+    public function setDefaultImage(?string $defaultImage = null) : Format
     {
         $this->data[self::DEFAULT_IMAGE] = (string)$defaultImage;
         return $this;
@@ -119,22 +120,22 @@ class Format implements \ArrayAccess
     /**
      * @return string|null
      */
-    public function getDefaultImage()
+    public function getDefaultImage() : ?string
     {
         return $this->data[self::DEFAULT_IMAGE];
     }
 
     /**
-     * @param string $offset
+     * @param string|int $offset
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset) : bool
     {
         return isset($this->data[$offset]);
     }
 
     /**
-     * @param string $offset
+     * @param string|int $offset
      * @return mixed
      */
     public function offsetGet($offset)
@@ -143,7 +144,7 @@ class Format implements \ArrayAccess
     }
 
     /**
-     * @param string $offset
+     * @param string|int $offset
      * @param mixed $value
      */
     public function offsetSet($offset, $value)
@@ -152,7 +153,7 @@ class Format implements \ArrayAccess
     }
 
     /**
-     * @param string $offset
+     * @param string|int $offset
      */
     public function offsetUnset($offset)
     {

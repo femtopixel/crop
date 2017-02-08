@@ -2,17 +2,16 @@
   "name": "femtopixel/crop",
   "description": "PHP Component to resize images from a configuration file",
   "require": {
-    "php": "^5.3 || ^7.0",
-    "ext-gd": "*"
+    "php": "^7.1"
   },
   "require-dev": {
     "phpmd/phpmd": "^2.4",
-    "phpunit/phpunit": "^4.0 || ^5.0",
+    "phpunit/phpunit": "^6.0",
     "phpdocumentor/phpdocumentor": "^2.9",
     "squizlabs/php_codesniffer": "^2.6",
     "sebastian/phpcpd": "^2.0",
-    "phploc/phploc": "^2.0 || ^3.0",
-    "codeclimate/php-test-reporter": "dev-master"
+    "phploc/phploc": "^3.0",
+    "codeclimate/php-test-reporter": "^0.4"
   },
   "autoload": {
     "psr-4": {

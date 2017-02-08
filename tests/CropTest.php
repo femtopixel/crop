@@ -4,7 +4,7 @@ namespace FemtoPixel\Crop\Tests;
 use FemtoPixel\Crop\Format;
 use FemtoPixel\Crop\ResizeEngine;
 
-class CropTest extends \PHPUnit_Framework_TestCase
+class CropTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstruct()
     {
@@ -94,16 +94,17 @@ class CropTest extends \PHPUnit_Framework_TestCase
     public function testFailGetAvailableFormatWhenNonExistingFormat()
     {
         $crop = new \FemtoPixel\Crop\Crop('/tmp');
-        $this->setExpectedException('\FemtoPixel\Crop\Exception\FormatNotAvailable', "Requested 'bob' format is not available");
+        $this->expectException(\FemtoPixel\Crop\Exception\FormatNotAvailable::class);
+        $this->expectExceptionMessage("Requested 'bob' format is not available");
         $crop->getAvailableFormat('bob');
     }
 
     public function testGetComputedDefaultFilePath()
     {
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\Crop', 'getComputedDefaultFilePath');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\Crop::class, 'getComputedDefaultFilePath');
         $reflectionMethod->setAccessible(true);
 
-        $crop = $this->getMockBuilder('\FemtoPixel\Crop\Crop')
+        $crop = $this->getMockBuilder(\FemtoPixel\Crop\Crop::class)
             ->disableOriginalConstructor()
             ->setMethods(array('getFormat', 'getDefaultImage', 'getAvailableFormat'))
             ->getMock();
@@ -143,7 +144,7 @@ class CropTest extends \PHPUnit_Framework_TestCase
             array(300, 600, false),
             array(700, 800, true),
         );
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\Crop', 'resize');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\Crop::class, 'resize');
         $reflectionMethod->setAccessible(true);
 
         $formats = array(
@@ -168,7 +169,7 @@ class CropTest extends \PHPUnit_Framework_TestCase
             ),
         );
 
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('resize'))->getMock();
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('resize'))->getMock();
         $resizeEngine->expects($this->exactly(4))
             ->method('resize')
             ->withConsecutive(
@@ -197,7 +198,7 @@ class CropTest extends \PHPUnit_Framework_TestCase
                     $this->equalTo($expectedResults[3][2])
                 )
             );
-        $crop = $this->getMockBuilder('\FemtoPixel\Crop\Crop')
+        $crop = $this->getMockBuilder(\FemtoPixel\Crop\Crop::class)
             ->disableOriginalConstructor()
             ->setMethods(array('getFormat', 'getResizeEngine', 'getAvailableFormat'))
             ->getMock();
@@ -229,7 +230,7 @@ class CropTest extends \PHPUnit_Framework_TestCase
         $filePath = '/var/www/file.png';
         $filePath2 = '/var/www/file2.png';
 
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('getImageInfo'))
             ->getMock();
         $resizeEngine->expects($this->exactly(4))
@@ -241,7 +242,7 @@ class CropTest extends \PHPUnit_Framework_TestCase
                 array($this->equalTo($filePath))
             )
             ->willReturn(array(ResizeEngine::INFO_MIME => 'image/png'));
-        $crop = $this->getMockBuilder('\FemtoPixel\Crop\Crop')
+        $crop = $this->getMockBuilder(\FemtoPixel\Crop\Crop::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 array(

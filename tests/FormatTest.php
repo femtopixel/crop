@@ -2,7 +2,7 @@
 namespace FemtoPixel\Crop\Tests;
 
 
-class FormatTest extends \PHPUnit_Framework_TestCase
+class FormatTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstruct()
     {
@@ -43,10 +43,8 @@ class FormatTest extends \PHPUnit_Framework_TestCase
     public function testFailSetFullModeWhenFormatNotAllowed()
     {
         $format = new \FemtoPixel\Crop\Format(10, 10);
-        $this->setExpectedException(
-            '\FemtoPixel\Crop\Exception\FormatFullModeNotAvailable',
-            "Format 'not existing' is not allowed in : none, cropped, height, width"
-        );
+        $this->expectException(\FemtoPixel\Crop\Exception\FormatFullModeNotAvailable::class);
+        $this->expectExceptionMessage("Format 'not existing' is not allowed in : none, cropped, height, width");
         $format->setFullMode('not existing');
     }
 }

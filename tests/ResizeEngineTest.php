@@ -1,20 +1,20 @@
 <?php
 namespace FemtoPixel\Crop\Tests;
 
-class ResizeEngineTest extends \PHPUnit_Framework_TestCase
+class ResizeEngineTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetImageInfoSuccessWhenGif()
     {
         $filePath = '/var/www/my/image.png';
 
         $resource = new \stdClass();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('imagecreatefromgif', 'imagesx', 'imagesy'))
             ->getMock();
         $mockGd->expects($this->once())->method('imagecreatefromgif')->willReturn($resource);
         $mockGd->expects($this->once())->method('imagesx')->with($this->equalTo($resource))->willReturn(100);
         $mockGd->expects($this->once())->method('imagesy')->with($this->equalTo($resource))->willReturn(200);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('verifyFormatCompatibility', 'getGd'))
             ->getMock();
         $resizeEngine->expects($this->once())
@@ -36,13 +36,13 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $filePath = '/var/www/my/image.png';
 
         $resource = new \stdClass();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('imagecreatefromjpeg', 'imagesx', 'imagesy'))
             ->getMock();
         $mockGd->expects($this->once())->method('imagecreatefromjpeg')->willReturn($resource);
         $mockGd->expects($this->once())->method('imagesx')->with($this->equalTo($resource))->willReturn(100);
         $mockGd->expects($this->once())->method('imagesy')->with($this->equalTo($resource))->willReturn(200);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('verifyFormatCompatibility', 'getGd'))
             ->getMock();
         $resizeEngine->expects($this->once())
@@ -64,13 +64,13 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $filePath = '/var/www/my/image.png';
 
         $resource = new \stdClass();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('imagecreatefrompng', 'imagesx', 'imagesy'))
             ->getMock();
         $mockGd->expects($this->once())->method('imagecreatefrompng')->willReturn($resource);
         $mockGd->expects($this->once())->method('imagesx')->with($this->equalTo($resource))->willReturn(100);
         $mockGd->expects($this->once())->method('imagesy')->with($this->equalTo($resource))->willReturn(200);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('verifyFormatCompatibility', 'getGd'))
             ->getMock();
         $resizeEngine->expects($this->once())
@@ -91,8 +91,8 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
     {
         $filePath = '/var/www/my/image.png';
 
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')->getMock();
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)->getMock();
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('verifyFormatCompatibility', 'getGd'))
             ->getMock();
         $resizeEngine->expects($this->once())
@@ -101,20 +101,21 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
             ->willReturn('image/svg');
         $resizeEngine->expects($this->once())->method('getGd')->willReturn($mockGd);
         /** @var $resizeEngine \FemtoPixel\Crop\ResizeEngine */
-        $this->setExpectedException('\Exception', "Your GD installation does not support image/svg image types");
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Your GD installation does not support image/svg image types");
         $resizeEngine->getImageInfo($filePath);
     }
 
     public function testVerifyFormatCompatibilityGif()
     {
         $filePath = '/var/www/my/image.png';
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'verifyFormatCompatibility');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'verifyFormatCompatibility');
         $reflectionMethod->setAccessible(true);
 
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('determineFormat', 'getGd'))
             ->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('gd_info'))
             ->getMock();
         $mockGd->expects($this->once())->method('gd_info')->willReturn(array('GIF Create Support' => true));
@@ -129,13 +130,13 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
     public function testVerifyFormatCompatibilityJpeg()
     {
         $filePath = '/var/www/my/image.png';
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'verifyFormatCompatibility');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'verifyFormatCompatibility');
         $reflectionMethod->setAccessible(true);
 
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('determineFormat', 'getGd'))
             ->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('gd_info'))
             ->getMock();
         $mockGd->expects($this->once())->method('gd_info')->willReturn(array('JPG Support' => true));
@@ -150,13 +151,13 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
     public function testVerifyFormatCompatibilityPng()
     {
         $filePath = '/var/www/my/image.png';
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'verifyFormatCompatibility');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'verifyFormatCompatibility');
         $reflectionMethod->setAccessible(true);
 
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('determineFormat', 'getGd'))
             ->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('gd_info'))
             ->getMock();
         $mockGd->expects($this->once())->method('gd_info')->willReturn(array('PNG Support' => true));
@@ -171,13 +172,13 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
     public function testVerifyFormatCompatibilityJpegViaSvg()
     {
         $filePath = '/var/www/my/image.png';
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'verifyFormatCompatibility');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'verifyFormatCompatibility');
         $reflectionMethod->setAccessible(true);
 
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('determineFormat', 'getGd'))
             ->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('gd_info'))
             ->getMock();
         $mockGd->expects($this->once())->method('gd_info')->willReturn(array('JPEG Support' => true));
@@ -192,13 +193,13 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
     public function testVerifyFormatCompatibilityFails()
     {
         $filePath = '/var/www/my/image.png';
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'verifyFormatCompatibility');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'verifyFormatCompatibility');
         $reflectionMethod->setAccessible(true);
 
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('determineFormat', 'getGd'))
             ->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('gd_info'))
             ->getMock();
         $mockGd->expects($this->once())->method('gd_info')->willReturn(array());
@@ -207,18 +208,19 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
             ->method('determineFormat')
             ->with($this->equalTo($filePath))
             ->willReturn('image/svg');
-        $this->setExpectedException('\Exception', 'Your GD installation does not support image/svg image types');
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Your GD installation does not support image/svg image types');
         $reflectionMethod->invoke($resizeEngine, $filePath);
     }
 
     public function testDetermineFormatGif()
     {
         $filePath = '/var/www/my/image.png';
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'determineFormat');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'determineFormat');
         $reflectionMethod->setAccessible(true);
 
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('getimagesize'))
             ->getMock();
         $mockGd->expects($this->once())
@@ -232,11 +234,11 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
     public function testDetermineFormatPng()
     {
         $filePath = '/var/www/my/image.png';
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'determineFormat');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'determineFormat');
         $reflectionMethod->setAccessible(true);
 
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('getimagesize'))
             ->getMock();
         $mockGd->expects($this->once())
@@ -250,11 +252,11 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
     public function testDetermineFormatJpeg()
     {
         $filePath = '/var/www/my/image.png';
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'determineFormat');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'determineFormat');
         $reflectionMethod->setAccessible(true);
 
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('getimagesize'))
             ->getMock();
         $mockGd->expects($this->once())
@@ -268,11 +270,11 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
     public function testDetermineFormatFailsSvg()
     {
         $filePath = '/var/www/my/image.png';
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'determineFormat');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'determineFormat');
         $reflectionMethod->setAccessible(true);
 
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('getimagesize'))
             ->getMock();
         $mockGd->expects($this->once())
@@ -280,18 +282,19 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($filePath))
             ->willReturn(array('mime' => 'image/svg'));
         $resizeEngine->expects($this->once())->method('getGd')->willReturn($mockGd);
-        $this->setExpectedException('\Exception', "Image format not supported: image/svg");
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Image format not supported: image/svg");
         $reflectionMethod->invoke($resizeEngine, $filePath);
     }
 
     public function testDetermineFormatFailsWhenNoInfo()
     {
         $filePath = '/var/www/my/image.png';
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'determineFormat');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'determineFormat');
         $reflectionMethod->setAccessible(true);
 
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('getimagesize'))
             ->getMock();
         $mockGd->expects($this->once())
@@ -299,7 +302,8 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($filePath))
             ->willReturn(false);
         $resizeEngine->expects($this->once())->method('getGd')->willReturn($mockGd);
-        $this->setExpectedException('\Exception', "File is not a valid image: {$filePath}");
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("File is not a valid image: {$filePath}");
         $reflectionMethod->invoke($resizeEngine, $filePath);
     }
 
@@ -308,10 +312,10 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $filePath = '/var/www/my/image.png';
         $type = IMAGETYPE_JPEG;
         $resource = new \stdClass();
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'getResource');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'getResource');
         $reflectionMethod->setAccessible(true);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('imagecreatefromjpeg'))
             ->getMock();
         $mockGd->expects($this->once())
@@ -327,10 +331,10 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $filePath = '/var/www/my/image.png';
         $type = IMAGETYPE_GIF;
         $resource = new \stdClass();
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'getResource');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'getResource');
         $reflectionMethod->setAccessible(true);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('imagecreatefromgif'))
             ->getMock();
         $mockGd->expects($this->once())
@@ -346,10 +350,10 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $filePath = '/var/www/my/image.png';
         $type = IMAGETYPE_PNG;
         $resource = new \stdClass();
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'getResource');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'getResource');
         $reflectionMethod->setAccessible(true);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('imagecreatefrompng'))
             ->getMock();
         $mockGd->expects($this->once())
@@ -364,9 +368,9 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
     {
         $filePath = '/var/www/my/image.png';
         $type = IMAGETYPE_SWC;
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'getResource');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'getResource');
         $reflectionMethod->setAccessible(true);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
         $this->assertFalse($reflectionMethod->invoke($resizeEngine, $type, $filePath));
     }
 
@@ -377,10 +381,10 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $height = 200;
         $resource = new \stdClass();
         $resource2 = new \stdClass();
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'prepareImageResized');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'prepareImageResized');
         $reflectionMethod->setAccessible(true);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('imagecreatetruecolor', 'imagecolortransparent'))
             ->getMock();
         $mockGd->expects($this->once())
@@ -401,10 +405,10 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $height = 200;
         $resource = new \stdClass();
         $resource2 = new \stdClass();
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'prepareImageResized');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'prepareImageResized');
         $reflectionMethod->setAccessible(true);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(
                 array(
                     'imagecreatetruecolor',
@@ -458,10 +462,10 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $height = 200;
         $resource = new \stdClass();
         $resource2 = new \stdClass();
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'prepareImageResized');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'prepareImageResized');
         $reflectionMethod->setAccessible(true);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(
                 array(
                     'imagecreatetruecolor',
@@ -498,10 +502,10 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $height = 200;
         $resource = new \stdClass();
         $resource2 = new \stdClass();
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'prepareImageResized');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'prepareImageResized');
         $reflectionMethod->setAccessible(true);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(
                 array(
                     'imagecreatetruecolor',
@@ -542,10 +546,10 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $resource = new \stdClass();
         $output = '/var/www/image.png';
 
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'render');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'render');
         $reflectionMethod->setAccessible(true);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')->setMethods(array('imagegif'))->getMock();
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)->setMethods(array('imagegif'))->getMock();
         $mockGd->expects($this->once())
             ->method('imagegif')
             ->with($this->equalTo($resource), $this->equalTo($output));
@@ -559,10 +563,10 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $resource = new \stdClass();
         $output = '/var/www/image.png';
 
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'render');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'render');
         $reflectionMethod->setAccessible(true);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')->setMethods(array('imagejpeg'))->getMock();
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)->setMethods(array('imagejpeg'))->getMock();
         $mockGd->expects($this->once())
             ->method('imagejpeg')
             ->with($this->equalTo($resource), $this->equalTo($output), $this->equalTo(100));
@@ -576,10 +580,10 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $resource = new \stdClass();
         $output = '/var/www/image.png';
 
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'render');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'render');
         $reflectionMethod->setAccessible(true);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')->setMethods(array('imagepng'))->getMock();
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)->setMethods(array('imagepng'))->getMock();
         $mockGd->expects($this->once())
             ->method('imagepng')
             ->with($this->equalTo($resource), $this->equalTo($output), $this->equalTo(9 - ((0.9 * 100) / 10.0)));
@@ -593,10 +597,10 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $resource = new \stdClass();
         $output = '/var/www/image.png';
 
-        $reflectionMethod = new \ReflectionMethod('\FemtoPixel\Crop\ResizeEngine', 'render');
+        $reflectionMethod = new \ReflectionMethod(\FemtoPixel\Crop\ResizeEngine::class, 'render');
         $reflectionMethod->setAccessible(true);
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')->setMethods(array('getGd'))->getMock();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')->setMethods(array('imagepng'))->getMock();
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)->setMethods(array('imagepng'))->getMock();
         $mockGd->expects($this->never())->method('imagepng');
         $resizeEngine->expects($this->once())->method('getGd')->willReturn($mockGd);
         $this->assertFalse($reflectionMethod->invoke($resizeEngine, $type, $resource, $output));
@@ -604,24 +608,28 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
 
     public function testFailResize()
     {
-        $resizerEngine = new \FemtoPixel\Crop\ResizeEngine();
-        $this->assertFalse($resizerEngine->resize(null));
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)->setMethods(array('getGd'))->getMock();
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)->setMethods(array('getimagesize'))->getMock();
+        $mockGd->expects($this->once())->method('getimagesize')->willReturn([10, 10, '/dev/null']);
+        $resizeEngine->expects($this->any())->method('getGd')->willReturn($mockGd);
+        /** @var $resizeEngine \FemtoPixel\Crop\ResizeEngine */
+        $this->assertFalse($resizeEngine->resize('/dev/null'));
     }
 
     public function testFailResizeOnBadInfo()
     {
         $file = '/var/www/image.png';
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('getimagesize'))
             ->getMock();
         $mockGd->expects($this->once())
             ->method('getimagesize')
-            ->willReturn(array(0, 1, 2));
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+            ->willReturn(array(0, 1, ''));
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('getGd', 'getResource'))
             ->getMock();
         $resizeEngine->expects($this->once())->method('getGd')->willReturn($mockGd);
-        $resizeEngine->expects($this->once())->method('getResource')->with($this->equalTo(2), $this->equalTo($file));
+        $resizeEngine->expects($this->once())->method('getResource')->with($this->equalTo(''), $this->equalTo($file));
         /** @var $resizeEngine \FemtoPixel\Crop\ResizeEngine */
         $this->assertFalse($resizeEngine->resize($file));
     }
@@ -631,12 +639,12 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $file = '/var/www/image.png';
         $resource = new \stdClass();
         $resource2 = new \stdClass();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('getimagesize', 'imagecopyresampled'))
             ->getMock();
         $mockGd->expects($this->once())
             ->method('getimagesize')
-            ->willReturn(array(100, 200, 2));
+            ->willReturn(array(100, 200, ''));
         $mockGd->expects($this->once())
             ->method('imagecopyresampled')
             ->with(
@@ -651,20 +659,20 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo(100),
                 $this->equalTo(200)
             );
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('getGd', 'getResource', 'prepareImageResized'))
             ->getMock();
         $resizeEngine->expects($this->once())->method('getGd')->willReturn($mockGd);
         $resizeEngine->expects($this->once())
             ->method('getResource')
-            ->with($this->equalTo(2), $this->equalTo($file))
+            ->with($this->equalTo(''), $this->equalTo($file))
             ->willReturn($resource);
         $resizeEngine->expects($this->once())
             ->method('prepareImageResized')
-            ->with($this->equalTo(100), $this->equalTo(200), $this->equalTo(2), $this->equalTo($resource))
+            ->with($this->equalTo(100), $this->equalTo(200), $this->equalTo(''), $this->equalTo($resource))
             ->willReturn($resource2);
         /** @var $resizeEngine \FemtoPixel\Crop\ResizeEngine */
-        $this->assertFalse($resizeEngine->resize($file, 0, 0, false, null));
+        $this->assertFalse($resizeEngine->resize($file, 0, 0, false, 'billy'));
     }
 
     public function testResizeOnFile()
@@ -672,12 +680,12 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $file = '/var/www/image.png';
         $resource = new \stdClass();
         $resource2 = new \stdClass();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('getimagesize', 'imagecopyresampled'))
             ->getMock();
         $mockGd->expects($this->once())
             ->method('getimagesize')
-            ->willReturn(array(100, 200, 2));
+            ->willReturn(array(100, 200, ''));
         $mockGd->expects($this->once())
             ->method('imagecopyresampled')
             ->with(
@@ -692,21 +700,21 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo(100),
                 $this->equalTo(200)
             );
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('getGd', 'getResource', 'prepareImageResized', 'render'))
             ->getMock();
         $resizeEngine->expects($this->once())->method('getGd')->willReturn($mockGd);
         $resizeEngine->expects($this->once())
             ->method('getResource')
-            ->with($this->equalTo(2), $this->equalTo($file))
+            ->with($this->equalTo(''), $this->equalTo($file))
             ->willReturn($resource);
         $resizeEngine->expects($this->once())
             ->method('prepareImageResized')
-            ->with($this->equalTo(100), $this->equalTo(200), $this->equalTo(2), $this->equalTo($resource))
+            ->with($this->equalTo(100), $this->equalTo(200), $this->equalTo(''), $this->equalTo($resource))
             ->willReturn($resource2);
         $resizeEngine->expects($this->once())
             ->method('render')
-            ->with($this->equalTo(2), $this->equalTo($resource2), $this->equalTo($file))
+            ->with($this->equalTo(''), $this->equalTo($resource2), $this->equalTo($file))
             ->willReturn(true);
         /** @var $resizeEngine \FemtoPixel\Crop\ResizeEngine */
         $this->assertTrue($resizeEngine->resize($file, 0, 0, false, \FemtoPixel\Crop\ResizeEngine::OUTPUT_FILE));
@@ -717,12 +725,12 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $file = '/var/www/image.png';
         $resource = new \stdClass();
         $resource2 = new \stdClass();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('getimagesize', 'imagecopyresampled'))
             ->getMock();
         $mockGd->expects($this->once())
             ->method('getimagesize')
-            ->willReturn(array(100, 200, 2));
+            ->willReturn(array(100, 200, ''));
         $mockGd->expects($this->once())
             ->method('imagecopyresampled')
             ->with(
@@ -737,17 +745,17 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo(100),
                 $this->equalTo(100)
             );
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('getGd', 'getResource', 'prepareImageResized'))
             ->getMock();
         $resizeEngine->expects($this->once())->method('getGd')->willReturn($mockGd);
         $resizeEngine->expects($this->once())
             ->method('getResource')
-            ->with($this->equalTo(2), $this->equalTo($file))
+            ->with($this->equalTo(''), $this->equalTo($file))
             ->willReturn($resource);
         $resizeEngine->expects($this->once())
             ->method('prepareImageResized')
-            ->with($this->equalTo(20), $this->equalTo(20), $this->equalTo(2), $this->equalTo($resource))
+            ->with($this->equalTo(20), $this->equalTo(20), $this->equalTo(''), $this->equalTo($resource))
             ->willReturn($resource2);
         /** @var $resizeEngine \FemtoPixel\Crop\ResizeEngine */
         $this->assertSame($resource2, $resizeEngine->resize($file, 20, 20, true, \FemtoPixel\Crop\ResizeEngine::OUTPUT_RETURN));
@@ -758,12 +766,12 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $file = '/var/www/image.png';
         $resource = new \stdClass();
         $resource2 = new \stdClass();
-        $mockGd = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine\Gd')
+        $mockGd = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine\Gd::class)
             ->setMethods(array('getimagesize', 'imagecopyresampled', 'image_type_to_mime_type'))
             ->getMock();
         $mockGd->expects($this->once())
             ->method('getimagesize')
-            ->willReturn(array(100, 200, 2));
+            ->willReturn(array(100, 200, ''));
         $mockGd->expects($this->once())
             ->method('imagecopyresampled')
             ->with(
@@ -780,26 +788,26 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
             );
         $mockGd->expects($this->once())
             ->method('image_type_to_mime_type')
-            ->with($this->equalTo(2))
+            ->with($this->equalTo(''))
             ->willReturn('image/png');
-        $resizeEngine = $this->getMockBuilder('\FemtoPixel\Crop\ResizeEngine')
+        $resizeEngine = $this->getMockBuilder(\FemtoPixel\Crop\ResizeEngine::class)
             ->setMethods(array('getGd', 'getResource', 'prepareImageResized', 'render', 'phpHeader'))
             ->getMock();
         $resizeEngine->expects($this->once())->method('getGd')->willReturn($mockGd);
         $resizeEngine->expects($this->once())
             ->method('getResource')
-            ->with($this->equalTo(2), $this->equalTo($file))
+            ->with($this->equalTo(''), $this->equalTo($file))
             ->willReturn($resource);
         $resizeEngine->expects($this->once())
             ->method('prepareImageResized')
-            ->with($this->equalTo(20), $this->equalTo(20), $this->equalTo(2), $this->equalTo($resource))
+            ->with($this->equalTo(20), $this->equalTo(20), $this->equalTo(''), $this->equalTo($resource))
             ->willReturn($resource2);
         $resizeEngine->expects($this->once())
             ->method('phpHeader')
             ->with($this->equalTo('Content-Type: image/png'));
         $resizeEngine->expects($this->once())
             ->method('render')
-            ->with($this->equalTo(2), $this->equalTo($resource2), $this->equalTo(null))
+            ->with($this->equalTo(''), $this->equalTo($resource2), $this->equalTo(null))
             ->willReturn(true);
 
         /** @var $resizeEngine \FemtoPixel\Crop\ResizeEngine */

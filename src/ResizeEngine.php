@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace FemtoPixel\Crop;
 
@@ -27,13 +28,8 @@ class ResizeEngine
      * @param string $output - name of the new file (include path if needed)
      * @return boolean|resource
      */
-    public function resize($file, $width = 0, $height = 0, $crop = null, $output = self::OUTPUT_BROWSER)
+    public function resize(string $file, int $width = 0, int $height = 0, bool $crop = false, string $output = self::OUTPUT_BROWSER)
     {
-        $crop = !is_null($crop) ? (bool)$crop : false;
-        if ($file === null) {
-            return false;
-        }
-
         $libGd = $this->getGd();
         # Setting defaults and meta
         $info = $libGd->getimagesize($file);
@@ -100,9 +96,8 @@ class ResizeEngine
      * @param null $httpResponseCode
      * @codeCoverageIgnore
      */
-    protected function phpHeader($string, $replace = null, $httpResponseCode = null)
+    protected function phpHeader(string $string, bool $replace = true, $httpResponseCode = null)
     {
-        $replace = !is_null($replace) ? (bool)$replace : true;
         header($string, $replace, $httpResponseCode);
     }
 
@@ -112,7 +107,7 @@ class ResizeEngine
      * @param string|null $output
      * @return bool
      */
-    protected function render($type, $resource, $output = null)
+    protected function render(string $type, $resource, ?string $output = null) : bool
     {
         $libGd = $this->getGd();
         # Writing image according to type to the output destination and image quality
@@ -141,7 +136,7 @@ class ResizeEngine
      * @param resource $image
      * @return resource
      */
-    protected function prepareImageResized($width, $height, $type, $image)
+    protected function prepareImageResized(int $width, int $height, string $type, $image)
     {
         $libGd = $this->getGd();
         $imageResized = $libGd->imagecreatetruecolor($width, $height);
@@ -149,7 +144,7 @@ class ResizeEngine
             $transparency = $libGd->imagecolortransparent($image);
             $palletSize = $libGd->imagecolorstotal($image);
 
-            if ($type !== IMAGETYPE_PNG && $transparency >= 0 && $transparency < $palletSize) {
+            if ($type != IMAGETYPE_PNG && $transparency >= 0 && $transparency < $palletSize) {
                 $transparentColor = $libGd->imagecolorsforindex($image, $transparency);
                 $transparency = $libGd->imagecolorallocate(
                     $imageResized,
@@ -159,7 +154,7 @@ class ResizeEngine
                 );
                 $libGd->imagefill($imageResized, 0, 0, $transparency);
                 $libGd->imagecolortransparent($imageResized, $transparency);
-            } elseif ($type === IMAGETYPE_PNG) {
+            } elseif ($type == IMAGETYPE_PNG) {
                 $libGd->imagealphablending($imageResized, false);
                 $libGd->imagesavealpha($imageResized, true);
             }
@@ -172,7 +167,7 @@ class ResizeEngine
      * @param string $file
      * @return bool|resource
      */
-    protected function getResource($type, $file)
+    protected function getResource(string $type, string $file)
     {
         $libGd = $this->getGd();
         switch ($type) {
@@ -196,7 +191,7 @@ class ResizeEngine
      * @return string
      * @throws \Exception
      */
-    protected function determineFormat($filePath)
+    protected function determineFormat(string $filePath) : string
     {
         $formatInfo = $this->getGd()->getimagesize($filePath);
 
@@ -205,7 +200,7 @@ class ResizeEngine
             throw new \Exception("File is not a valid image: {$filePath}");
         }
 
-        $mimeType = isset($formatInfo['mime']) ? $formatInfo['mime'] : null;
+        $mimeType = isset($formatInfo['mime']) ? $formatInfo['mime'] : '';
 
         switch ($mimeType) {
             case 'image/gif':
@@ -222,7 +217,7 @@ class ResizeEngine
      * @return string
      * @throws \Exception
      */
-    protected function verifyFormatCompatibility($filePath)
+    protected function verifyFormatCompatibility(string $filePath) : string
     {
         $gdInfo = $this->getGd()->gd_info();
         $format = $this->determineFormat($filePath);
@@ -257,7 +252,7 @@ class ResizeEngine
      * @return array
      * @throws \Exception
      */
-    public function getImageInfo($filePath)
+    public function getImageInfo(string $filePath) : array
     {
         $libGd = $this->getGd();
         $format = $this->verifyFormatCompatibility($filePath);
@@ -286,7 +281,7 @@ class ResizeEngine
      * @return ResizeEngine\Gd
      * @codeCoverageIgnore
      */
-    protected function getGd()
+    protected function getGd() : ResizeEngine\Gd
     {
         return $this->libGd = $this->libGd ?: new ResizeEngine\Gd();
     }
