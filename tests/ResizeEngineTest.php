@@ -509,8 +509,6 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
                     'imagecolorstotal',
                     'imagecolorsforindex',
                     'imagealphablending',
-                    'imagecolorallocatealpha',
-                    'imagefill',
                     'imagesavealpha',
                 )
             )
@@ -529,19 +527,6 @@ class ResizeEngineTest extends \PHPUnit_Framework_TestCase
         $mockGd->expects($this->once())
             ->method('imagealphablending')
             ->with($this->equalTo($resource2), $this->equalTo(false));
-        $mockGd->expects($this->once())
-            ->method('imagecolorallocatealpha')
-            ->with(
-                $this->equalTo($resource2),
-                $this->equalTo(0),
-                $this->equalTo(0),
-                $this->equalTo(0),
-                $this->equalTo(127)
-            )
-            ->willReturn(5000);
-        $mockGd->expects($this->once())
-            ->method('imagefill')
-            ->with($this->equalTo($resource2), $this->equalTo(0), $this->equalTo(0), $this->equalTo(5000));
         $mockGd->expects($this->once())
             ->method('imagesavealpha')
             ->with($this->equalTo($resource2), $this->equalTo(true));

@@ -147,9 +147,9 @@ class ResizeEngine
         $imageResized = $libGd->imagecreatetruecolor($width, $height);
         if (($type == IMAGETYPE_GIF) || ($type == IMAGETYPE_PNG)) {
             $transparency = $libGd->imagecolortransparent($image);
-            $palletsize = $libGd->imagecolorstotal($image);
+            $palletSize = $libGd->imagecolorstotal($image);
 
-            if ($transparency >= 0 && $transparency < $palletsize) {
+            if ($type !== IMAGETYPE_PNG && $transparency >= 0 && $transparency < $palletSize) {
                 $transparentColor = $libGd->imagecolorsforindex($image, $transparency);
                 $transparency = $libGd->imagecolorallocate(
                     $imageResized,
@@ -159,10 +159,8 @@ class ResizeEngine
                 );
                 $libGd->imagefill($imageResized, 0, 0, $transparency);
                 $libGd->imagecolortransparent($imageResized, $transparency);
-            } elseif ($type == IMAGETYPE_PNG) {
+            } elseif ($type === IMAGETYPE_PNG) {
                 $libGd->imagealphablending($imageResized, false);
-                $color = $libGd->imagecolorallocatealpha($imageResized, 0, 0, 0, 127);
-                $libGd->imagefill($imageResized, 0, 0, $color);
                 $libGd->imagesavealpha($imageResized, true);
             }
         }
