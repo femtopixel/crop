@@ -7,10 +7,9 @@
   "require-dev": {
     "phpmd/phpmd": "^2.4",
     "phpunit/phpunit": "^6.0",
-    "phpdocumentor/phpdocumentor": "^2.9",
-    "squizlabs/php_codesniffer": "^2.6",
-    "sebastian/phpcpd": "^2.0",
-    "phploc/phploc": "^3.0",
+    "squizlabs/php_codesniffer": "^3.0",
+    "sebastian/phpcpd": "^3.0",
+    "phploc/phploc": "^4.0",
     "codeclimate/php-test-reporter": "^0.4"
   },
   "autoload": {
@@ -28,8 +27,7 @@
     "phpcs": "phpcs src --standard=PSR2 --report-checkstyle=build/logs/checkstyle.xml",
     "phploc": "phploc src --log-csv build/logs/phploc.csv",
     "phpmd": "phpmd src xml codesize,controversial,cleancode,design,naming,unusedcode --reportfile build/logs/checkstyle.xml",
-    "phpcpd": "phpcpd src --log-pmd=build/logs/cpd.xml",
-    "phpdoc": "phpdoc -d src -t docs --template clean"
+    "phpcpd": "phpcpd src --log-pmd=build/logs/cpd.xml"
   },
   "license": "MIT",
   "authors": [
