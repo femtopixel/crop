@@ -5,6 +5,9 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/femtopixel/crop/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/femtopixel/crop/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/femtopixel/crop/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/femtopixel/crop/?branch=master)
 [![License](https://poser.pugx.org/femtopixel/crop/license)](https://packagist.org/packages/femtopixel/crop)
+[![Bitcoin donation](https://github.com/jaymoulin/jaymoulin.github.io/raw/master/btc.png "Bitcoin donation")](https://m.freewallet.org/id/374ad82e/btc)
+[![Litecoin donation](https://github.com/jaymoulin/jaymoulin.github.io/raw/master/ltc.png "Litecoin donation")](https://m.freewallet.org/id/374ad82e/ltc)
+
 
 Crop
 ====
